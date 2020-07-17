@@ -5,4 +5,4 @@ Usage: ./lady_fanstasy.bash
 Dependancies:  
 beep
 
-Plays Lasy Fantasy from Camel
+Plays Lady Fantasy from Camel
