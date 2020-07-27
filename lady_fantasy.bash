@@ -12,6 +12,11 @@ FA3=352
 SOL3=392
 LA3=440
 
+TEMPO=1
+if [ $# -eq 1 ]; then
+	TEMPO=$1
+fi
+
 function play {
 	PITCH=$1
 	DURATION=$2
@@ -20,6 +25,9 @@ function play {
 	if [ $# -ge 3 ]; then
 		SLEEP_TIME=$3
 	fi
+
+	DURATION=$(bc <<< "scale=2; $DURATION/$TEMPO")
+	SLEEP_TIME=$(bc <<< "scale=2; $SLEEP_TIME/$TEMPO")
 
 	beep -f $PITCH -l $DURATION
 	sleep $SLEEP_TIME
