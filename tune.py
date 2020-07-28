@@ -62,14 +62,21 @@ class Pattern(AbstractTune):
                 tune.play(tempo=tempo)
 
 class Note(AbstractTune):
-    def __init__(self, pitch, duration, sleep_time=0):
-        self.pitch = pitch
+    def __init__(self, note_label, octave, duration, note_shift=NoteShift.NORMAL, sleep_time=0):
+        self.pitch = note_label_to_freq(note_label, octave, note_shift)
+        self.note_label = note_label
+        self.octave = octave
+        self.note_shift = note_shift
+
         self.duration = duration
         self.sleep_time = sleep_time
 
     def play(self, tempo=1):
         os.system("beep -f {} -l {}".format(self.pitch.value, self.duration*tempo))
         time.sleep(self.sleep_time*tempo)
+
+    def __str__(self):
+        return self.note_label.value + self.note_shift.value + str(self.octave)
 
 class Silence(AbstractTune):
     def __init__(self, duration):
