@@ -14,6 +14,7 @@ class NoteLabel(enum.Enum):
     SI = "SI"
 
 class NoteShift(enum.Enum):
+    NORMAL = ""
     SHARP = "#"
     BEMOL = "b"
 
@@ -28,7 +29,7 @@ interval_dict = {
     NoteLabel.SI : 2
 }
 
-def note_label_to_freq(note_name, octave, note_shift=None):
+def note_label_to_freq(note_name, octave, note_shift=NoteShift.NORMAL):
     shifter = 0
     if note_shift == NoteShift.SHARP:
         shifter = 1
