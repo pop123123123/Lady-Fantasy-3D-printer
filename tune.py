@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import enum
+import os
+import time
 
 class Pitch(enum.Enum):
     MI2 = 164.8
@@ -20,18 +22,24 @@ class AbstractTune():
         raise NotImplementedError()
 
 class Pattern(AbstractTune):
-    def __init__(self, notes=[]):
-        self.notes = notes
+    def __init__(self, tunes=[], nb_loops=1):
+        self.tunes = tunes
+        self.nb_loops = nb_loops
 
-    def add_note(self, note):
-        self.notes.append(note)
+    def add_tune(self, tune):
+        self.tunes.append(tune)
+
+    def play(self, tempo=1):
+        for _ in range(self.nb_loops):
+            for tune in self.tunes:
+                tune.play(tempo=tempo)
 
 class Note(AbstractTune):
-    def __init__(self, pitch, duration, sleep):
+    def __init__(self, pitch, duration, sleep_time=0):
         self.pitch = pitch
         self.duration = duration
-        self.sleep = sleep
+        self.sleep_time = sleep_time
 
-
-def main():
-    pass
+    def play(self, tempo=1):
+        os.system("beep -f {} -l {}".format(self.pitch.value, self.duration*tempo))
+        time.sleep(self.sleep_time*tempo)
