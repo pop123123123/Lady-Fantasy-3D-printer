@@ -5,12 +5,12 @@ import os
 import time
 
 class NoteLabel(enum.Enum):
-    DO = "DO",
-    RE = "RE",
-    MI = "MI",
-    FA = "FA",
-    SOL = "SOL",
-    LA = "LA",
+    DO = "DO"
+    RE = "RE"
+    MI = "MI"
+    FA = "FA"
+    SOL = "SOL"
+    LA = "LA"
     SI = "SI"
 
 class NoteShift(enum.Enum):
@@ -42,19 +42,6 @@ def note_label_to_freq(note_name, octave, note_shift=None):
     la3_interval = shifted_octave*12 + interval_dict[note_name] + shifter
 
     return la3_freq * (semitone_freq**la3_interval)
-
-class Pitch(enum.Enum):
-    MI2 = 164.8
-    SOLD2 = 207.6
-    LA2 = 220.0
-    LAD2 = 233.0
-    SI2 = 247.5
-    DO3 = 264.0
-    RE3 = 297.0
-    MI3 = 330.0
-    FA3 = 352.0
-    SOL3 = 392.0
-    LA3 = 440.0
 
 class AbstractTune():
     def play(self, tempo=1):
