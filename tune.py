@@ -4,6 +4,17 @@ import enum
 import os
 import time
 
+#Intervals to LA3
+interval_dict = {
+    "DO" : -9,
+    "RE" : -7,
+    "MI" : -5,
+    "FA" : -4,
+    "SOL" : -2,
+    "LA" : 0,
+    "SI" : 2
+}
+
 def note_label_to_freq(note_name, note_shift, octave):
     pass
 
