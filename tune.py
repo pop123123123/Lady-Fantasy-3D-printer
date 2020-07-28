@@ -4,6 +4,9 @@ import enum
 import os
 import time
 
+def note_label_to_freq(note_name, note_shift, octave):
+    pass
+
 class Pitch(enum.Enum):
     MI2 = 164.8
     SOLD2 = 207.6
