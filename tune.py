@@ -43,3 +43,10 @@ class Note(AbstractTune):
     def play(self, tempo=1):
         os.system("beep -f {} -l {}".format(self.pitch.value, self.duration*tempo))
         time.sleep(self.sleep_time*tempo)
+
+class Silence(AbstractTune):
+    def __init__(self, duration):
+        self.duration = duration
+
+    def play(self, tempo=1):
+        time.sleep(self.duration*tempo)
