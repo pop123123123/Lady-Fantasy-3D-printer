@@ -3,7 +3,7 @@ import tune
 
 grammar = parsimonious.grammar.Grammar(
     r"""
-    entry = block+
+    entry = block+ ws
     block = opening_block ws tune* ws "}" ws ("*" repeat)?
     opening_block = "{"
     tune = block / sound
