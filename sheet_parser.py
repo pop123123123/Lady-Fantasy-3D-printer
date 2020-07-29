@@ -108,3 +108,9 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
     def visit_silence(self, node, children):
         father = self.get_current_pattern()
         father.add_tune(tune.Silence(int(node.text)))
+
+def parse_sheet(sheet):
+    tree = grammar.parse(sheet)
+    sv = SheetVisitor()
+    sv.visit(tree)
+    return sv.root_blocks
