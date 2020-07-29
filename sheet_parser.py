@@ -89,17 +89,16 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_note_duration = int(node.text)
 
     def visit_sleep_time(self, node, children):
-        self.current_note_sleep_time = float(node.text)
+        self.current_pitch_sleep_time = float(node.text)
 
     def visit_note(self, node, children):
         current_pattern = self.get_current_pattern()
 
         note = tune.Note(self.current_pitch, self.current_note_duration)
         current_pattern.add_tune(note)
-        print("Note", note, "added", current_pattern, current_pattern.tunes)
 
-        if self.current_note_sleep_time is not None:
-            silence = tune.Silence(self.current_note_sleep_time)
+        if self.current_pitch_sleep_time is not None:
+            silence = tune.Silence(self.current_pitch_sleep_time)
             current_pattern.add_tune(silence)
 
         self.current_pitch = None
