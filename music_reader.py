@@ -7,6 +7,7 @@ import sheet_parser as sp
 def main():
     parser = argparse.ArgumentParser(description="Plays a music sheet")
     parser.add_argument("filename", help="source sheet file")
+    parser.add_argument("--string", action="store_true", help="read the music from a string")
     parser.add_argument("-t", help="tempo multiplier")
     args = parser.parse_args()
 
@@ -14,10 +15,12 @@ def main():
     if args.t:
         tempo = 1/float(args.t)
 
-
-    filename = args.filename
-    with open(filename, "r") as f:
-        sheet = f.read()
+    if args.string:
+        sheet = args.filename
+    else:
+        filename = args.filename
+        with open(filename, "r") as f:
+            sheet = f.read()
 
     patterns = sp.parse_sheet(sheet)
 
