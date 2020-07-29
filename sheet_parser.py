@@ -4,7 +4,7 @@ import tune
 grammar = parsimonious.grammar.Grammar(
     r"""
     entry = block+ ws
-    block = opening_block ws tune* ws "}" ws ("*" repeat)?
+    block = opening_block ws tune* ws "}" ws repeater? ws
     opening_block = "{"
     tune = block / sound
     sound = note / silence
@@ -16,7 +16,8 @@ grammar = parsimonious.grammar.Grammar(
     pitch_label = "DO" / "RE" / "MI" / "FA" / "SOL" / "LA" / "SI"
     shifter = "#" / "b"
     octave = ~"\d+"
-    repeat = ~"\d+"
+    repeater = "*" ws repeat_counter
+    repeat_counter = ~"\d+"
     ws = ~"\s*"
     """
 )
@@ -58,7 +59,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         # New pattern becomes current pattern
         self.patterns.append(new_pattern)
 
-    def visit_repeat(self, node, children):
+    def visit_repeat_counter(self, node, children):
         self.get_current_pattern().nb_loops = int(node.text)
 
     def visit_block(self, node, children):
