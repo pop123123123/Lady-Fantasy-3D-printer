@@ -4,7 +4,7 @@ import enum
 import os
 import time
 
-class NoteLabel(enum.Enum):
+class PitchLabel(enum.Enum):
     DO = "DO"
     RE = "RE"
     MI = "MI"
@@ -13,36 +13,22 @@ class NoteLabel(enum.Enum):
     LA = "LA"
     SI = "SI"
 
-class NoteShift(enum.Enum):
+class PitchShift(enum.Enum):
     NORMAL = ""
     SHARP = "#"
     BEMOL = "b"
 
 #Intervals to LA3
 interval_dict = {
-    NoteLabel.DO : -9,
-    NoteLabel.RE : -7,
-    NoteLabel.MI : -5,
-    NoteLabel.FA : -4,
-    NoteLabel.SOL : -2,
-    NoteLabel.LA : 0,
-    NoteLabel.SI : 2
+    PitchLabel.DO : -9,
+    PitchLabel.RE : -7,
+    PitchLabel.MI : -5,
+    PitchLabel.FA : -4,
+    PitchLabel.SOL : -2,
+    PitchLabel.LA : 0,
+    PitchLabel.SI : 2
 }
 
-def note_label_to_freq(note_name, octave, note_shift=NoteShift.NORMAL):
-    shifter = 0
-    if note_shift == NoteShift.SHARP:
-        shifter = 1
-    if note_shift == NoteShift.BEMOL:
-        shifter = -1
-
-    semitone_freq = 1.05946
-    la3_freq = 440
-
-    shifted_octave = octave-3
-    la3_interval = shifted_octave*12 + interval_dict[note_name] + shifter
-
-    return la3_freq * (semitone_freq**la3_interval)
 
 class AbstractTune():
     def play(self, tempo=1):
@@ -61,22 +47,48 @@ class Pattern(AbstractTune):
             for tune in self.tunes:
                 tune.play(tempo=tempo)
 
-class Note(AbstractTune):
-    def __init__(self, note_label, octave, duration, note_shift=NoteShift.NORMAL, sleep_time=0):
-        self.pitch = note_label_to_freq(note_label, octave, note_shift)
-        self.note_label = note_label
+class Pitch():
+    def __init__(self, pitch_label, octave, pitch_shift=PitchShift.NORMAL):
+        self.pitch_label = pitch_label
         self.octave = octave
-        self.note_shift = note_shift
+        self.pitch_shift = pitch_shift
 
-        self.duration = duration
-        self.sleep_time = sleep_time
+        self.freq = self._compute_freq()
 
-    def play(self, tempo=1):
-        os.system("beep -f {} -l {}".format(self.pitch.value, self.duration*tempo))
-        time.sleep(self.sleep_time*tempo)
+
+    SEMITONE_FREQ = 1.05946
+    LA3_FREQ = 440
+
+    def _compute_freq(self):
+        shifter = 0
+        if self.pitch_shift == PitchShift.SHARP:
+            shifter = 1
+        if self.pitch_shift == PitchShift.BEMOL:
+            shifter = -1
+
+        shifted_octave = self.octave-3
+        la3_interval = shifted_octave*12 + interval_dict[self.pitch_label] + shifter
+        return Pitch.LA3_FREQ * (Pitch.SEMITONE_FREQ**la3_interval)
+
+
+    def get_freq(self):
+        return self.freq
 
     def __str__(self):
-        return self.note_label.value + self.note_shift.value + str(self.octave)
+        return self.pitch_label.value + self.pitch_shift.value + str(self.octave)
+
+class Note(AbstractTune):
+    def __init__(self, pitch, duration):
+        self.pitch = pitch
+        self.duration = duration
+
+    def play(self, tempo=1):
+        os.system("beep -f {} -l {}".format(self.pitch.get_freq(), self.duration*tempo))
+
+
+    def __str__(self):
+        return str(self.pitch) + " " + str(self.duration)
+
 
 class Silence(AbstractTune):
     def __init__(self, duration):
@@ -84,3 +96,6 @@ class Silence(AbstractTune):
 
     def play(self, tempo=1):
         time.sleep(self.duration*tempo)
+
+    def __str__(self):
+        return "s", str(self.duration)
