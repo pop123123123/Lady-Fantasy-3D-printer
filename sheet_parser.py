@@ -3,7 +3,7 @@ import tune
 
 grammar = parsimonious.grammar.Grammar(
     r"""
-    entry = block+ ws
+    entry = tune+ ws
     block = opening_block ws tune* ws "}" ws repeater? ws
     opening_block = "{"
     tune = block / sound
@@ -24,7 +24,8 @@ grammar = parsimonious.grammar.Grammar(
 
 class SheetVisitor(parsimonious.nodes.NodeVisitor):
     def __init__(self):
-        self.patterns = []
+        self.allfather_pattern = tune.Pattern([])
+        self.patterns = [self.allfather_pattern]
 
         self.current_pitch_label = None
         self.current_pitch_shift = None
@@ -64,8 +65,6 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
 
     def visit_block(self, node, children):
         closed_block = self.patterns.pop()
-        if self.patterns == []:
-            self.root_blocks.append(closed_block)
 
     def visit_pitch_label(self, node, children):
         self.current_pitch_label = tune.PitchLabel(node.text)
@@ -114,4 +113,4 @@ def parse_sheet(sheet):
     tree = grammar.parse(sheet)
     sv = SheetVisitor()
     sv.visit(tree)
-    return sv.root_blocks
+    return sv.allfather_pattern

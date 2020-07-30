@@ -22,10 +22,8 @@ def main():
         with open(filename, "r") as f:
             sheet = f.read()
 
-    patterns = sp.parse_sheet(sheet)
-
-    for pattern in patterns:
-        pattern.play(tempo=tempo)
+    melody = sp.parse_sheet(sheet)
+    melody.play(tempo=tempo)
 
 if __name__ == "__main__":
     main()
