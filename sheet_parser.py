@@ -24,7 +24,7 @@ grammar = parsimonious.grammar.Grammar(
 
 class SheetVisitor(parsimonious.nodes.NodeVisitor):
     def __init__(self):
-        self.allfather_pattern = tune.Pattern([])
+        self.allfather_pattern = tune.Pattern()
         self.patterns = [self.allfather_pattern]
 
         self.current_pitch_label = None
@@ -50,8 +50,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         pass
 
     def visit_opening_block(self, node, children):
-        # TODO: en enlevant les [] ca fait de la merde
-        new_pattern = tune.Pattern([])
+        new_pattern = tune.Pattern()
 
         current_pattern = self.get_current_pattern()
         if current_pattern is not None:

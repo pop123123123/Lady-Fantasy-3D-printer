@@ -35,7 +35,10 @@ class AbstractTune():
         raise NotImplementedError()
 
 class Pattern(AbstractTune):
-    def __init__(self, tunes=[], nb_loops=1):
+    def __init__(self, tunes=None, nb_loops=1):
+        if tunes is None:
+            tunes = []
+
         self.tunes = tunes
         self.nb_loops = nb_loops
 
