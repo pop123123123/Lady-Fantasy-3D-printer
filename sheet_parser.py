@@ -111,8 +111,8 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_pitch_sleep_time = float(node.text)
 
     def visit_named_tune(self, node, children):
-        #if self.current_name not in self.declarations:
-        #    raise parsimonious.exceptions.ParseError("Pattern {} never been declared".format(node.text))
+        if self.current_name not in self.declarations:
+            raise Exception("Tune {} never been declared".format(node.text))
 
         self.current_tune = self.declarations[self.current_name]
 
