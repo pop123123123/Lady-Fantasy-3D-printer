@@ -5,7 +5,7 @@ grammar = parsimonious.grammar.Grammar(
     r"""
     entry = declarative? ws sheet ws
     declarative = "DECLARE:" ws declare_tune+ ws
-    declare_tune = name ws ":=" ws anonym_tune ws
+    declare_tune = name inline_ws ":=" inline_ws anonym_tune ws
 
     sheet = "BEGIN:" ws tune+ ws
 
@@ -33,6 +33,7 @@ grammar = parsimonious.grammar.Grammar(
 
     name = ~"[A-Z 0-9]+"i
     ws = ~"\s*"
+    inline_ws = ~"[ \t]*"
     """
 )
 
