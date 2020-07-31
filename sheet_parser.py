@@ -39,8 +39,8 @@ grammar = parsimonious.grammar.Grammar(
 
 class SheetVisitor(parsimonious.nodes.NodeVisitor):
     def __init__(self):
-        self.allfather_pattern = tune.Pattern()
-        self.patterns = [self.allfather_pattern]
+        self.allfather_block = tune.Pattern()
+        self.blocks = [self.allfather_block]
 
         self.current_name = None
 
@@ -57,10 +57,10 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_pitch_duration = None
         self.current_pitch_sleep_time = None
 
-    def get_current_pattern(self):
-        if self.patterns == []:
+    def get_current_block(self):
+        if self.blocks == []:
             return None
-        return self.patterns[-1]
+        return self.blocks[-1]
 
     def generic_visit(self, node, children):
         pass
@@ -69,8 +69,8 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_name = node.text.strip()
 
     def visit_opening_block(self, node, children):
-        new_pattern = tune.Pattern()
-        self.patterns.append(new_pattern)
+        new_block = tune.Pattern()
+        self.blocks.append(new_block)
 
     def visit_declare_tune(self, node, children):
         self.declarations[self.current_name] = self.current_tune
@@ -79,10 +79,10 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_tune = None
 
     def visit_repeat_counter(self, node, children):
-        self.get_current_pattern().nb_loops = int(node.text)
+        self.get_current_block().nb_loops = int(node.text)
 
     def visit_block(self, node, children):
-        closed_block = self.patterns.pop()
+        closed_block = self.blocks.pop()
         self.current_tune = closed_block
 
     def visit_pitch_label(self, node, children):
@@ -119,8 +119,8 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_name = None
 
     def visit_tune(self, node, children):
-        current_pattern = self.get_current_pattern()
-        current_pattern.add_tune(self.current_tune)
+        current_block = self.get_current_block()
+        current_block.add_tune(self.current_tune)
 
         self.current_tune = None
 
@@ -151,4 +151,4 @@ def parse_sheet(sheet):
     tree = grammar.parse(sheet)
     sv = SheetVisitor()
     sv.visit(tree)
-    return sv.allfather_pattern
+    return sv.allfather_block
