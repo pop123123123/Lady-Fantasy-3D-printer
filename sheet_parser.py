@@ -127,7 +127,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_tune = None
 
     def visit_note(self, node, children):
-        local_pattern = tune.Pattern([])
+        local_pattern = tune.Pattern()
 
         note = tune.Note(self.current_pitch, self.current_note_duration)
         local_pattern.add_tune(note)
@@ -143,7 +143,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_pitch_sleep_time = None
 
     def visit_silence(self, node, children):
-        local_pattern = tune.Pattern([])
+        local_pattern = tune.Pattern()
         local_pattern.add_tune(tune.Silence(self.current_pitch_sleep_time))
 
         self.current_tune = local_pattern
