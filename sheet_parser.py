@@ -143,7 +143,10 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_pitch_sleep_time = None
 
     def visit_silence(self, node, children):
-        self.current_tune = tune.Silence(self.current_pitch_sleep_time)
+        local_pattern = tune.Pattern([])
+        local_pattern.add_tune(tune.Silence(self.current_pitch_sleep_time))
+
+        self.current_tune = local_pattern
 
 def parse_sheet(sheet):
     tree = grammar.parse(sheet)
