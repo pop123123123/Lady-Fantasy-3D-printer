@@ -9,6 +9,7 @@ def main():
     parser.add_argument("filename", help="source sheet file")
     parser.add_argument("-s", "--string", action="store_true", help="read the music from a string")
     parser.add_argument("-t", "--tempo", help="tempo multiplier")
+    parser.add_argument("-i", "--infinite", action="store_true", help="plays the sheet in loop")
     args = parser.parse_args()
 
     tempo = 1
@@ -24,6 +25,10 @@ def main():
 
     melody = sp.parse_sheet(sheet)
     melody.play(tempo=tempo)
+
+    if args.infinite:
+        while True:
+            melody.play(tempo=tempo)
 
 if __name__ == "__main__":
     main()
