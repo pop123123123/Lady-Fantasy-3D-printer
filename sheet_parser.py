@@ -57,8 +57,6 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_pitch_duration = None
         self.current_pitch_sleep_time = None
 
-        self.root_blocks = []
-
     def get_current_pattern(self):
         if self.patterns == []:
             return None
