@@ -18,6 +18,24 @@ class PitchShift(enum.Enum):
     SHARP = "#"
     BEMOL = "b"
 
+PitchLabelDict = {
+    "A" : PitchLabel.LA,
+    "B" : PitchLabel.SI,
+    "C" : PitchLabel.DO,
+    "D" : PitchLabel.RE,
+    "E" : PitchLabel.MI,
+    "F" : PitchLabel.FA,
+    "G" : PitchLabel.SOL,
+    "DO" : PitchLabel.DO,
+    "RE" : PitchLabel.RE,
+    "MI" : PitchLabel.MI,
+    "FA" : PitchLabel.FA,
+    "SOL" : PitchLabel.SOL,
+    "LA" : PitchLabel.LA,
+    "SI" : PitchLabel.SI,
+}
+
+
 #Intervals to LA3
 interval_dict = {
     PitchLabel.DO : -9,

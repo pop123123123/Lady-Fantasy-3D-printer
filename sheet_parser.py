@@ -23,7 +23,9 @@ grammar = parsimonious.grammar.Grammar(
 
     note = pitch hs duration hs sleep_time? trash
     pitch = pitch_label shifter? octave
-    pitch_label = "DO" / "RE" / "MI" / "FA" / "SOL" / "LA" / "SI"
+    pitch_label = pitch_italian_label / pitch_german_label
+    pitch_italian_label = "DO" / "RE" / "MI" / "FA" / "SOL" / "LA" / "SI"
+    pitch_german_label = "A" / "B" / "C" / "D" / "E" / "F" / "G"
     shifter = "#" / "b"
     octave = ~"\d+"
 
@@ -91,7 +93,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_tune = closed_block
 
     def visit_pitch_label(self, node, children):
-        self.current_pitch_label = tune.PitchLabel(node.text)
+        self.current_pitch_label = tune.PitchLabelDict[node.text]
 
     def visit_shifter(self, node, children):
         self.current_pitch_shift = tune.PitchShift(node.text)
