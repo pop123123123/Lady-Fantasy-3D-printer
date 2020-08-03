@@ -5,7 +5,7 @@ grammar = parsimonious.grammar.Grammar(
     r"""
     entry = declarative? ws sheet ws
     declarative = "DECLARE:" ws declare_tune+ ws
-    declare_tune = name inline_ws ":=" inline_ws anonym_tune ws
+    declare_tune = name hs ":=" hs anonym_tune ws
 
     sheet = "BEGIN:" ws tune+ ws
 
@@ -21,19 +21,19 @@ grammar = parsimonious.grammar.Grammar(
 
     sound = note / silence
 
-    note = pitch ws duration ws sleep_time? ws
+    note = pitch hs duration hs sleep_time? ws
     pitch = pitch_label shifter? octave
     pitch_label = "DO" / "RE" / "MI" / "FA" / "SOL" / "LA" / "SI"
     shifter = "#" / "b"
     octave = ~"\d+"
 
-    silence = "s"? ws sleep_time
+    silence = "s"? hs sleep_time
     duration = ~"\d+"
     sleep_time = ~"\d*.\d+"
 
     name = ~"[A-Z 0-9]+"i
     ws = ~"\s*"
-    inline_ws = ~"[ \t]*"
+    hs = ~"[\t\ ]*"
     """
 )
 
