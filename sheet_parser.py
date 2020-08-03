@@ -31,7 +31,8 @@ grammar = parsimonious.grammar.Grammar(
     duration = ~"\d+"
     sleep_time = ~"\d*.\d+"
 
-    comment = ~"//.+"
+    comment = comment_sign ~".+"
+    comment_sign = "//" / "𝅘𝅥𝅮"
     trash = ((comment / hs)* newline?)*
 
     name = ~"[A-Z 0-9]+"i
