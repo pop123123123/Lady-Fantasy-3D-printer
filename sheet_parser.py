@@ -3,25 +3,25 @@ import tune
 
 grammar = parsimonious.grammar.Grammar(
     r"""
-    entry = declarative? ws sheet ws
-    declarative = "DECLARE:" ws declare_tune+ ws
-    declare_tune = name hs ":=" hs anonym_tune ws
+    entry = trash declarative? trash sheet trash
+    declarative = "DECLARE:" trash declare_tune+ trash
+    declare_tune = name hs ":=" hs anonym_tune trash
 
-    sheet = "BEGIN:" ws tune+ ws
+    sheet = "BEGIN:" trash tune+
 
-    tune = (anonym_tune / named_tune) ws
+    tune = (anonym_tune / named_tune) trash
 
-    named_tune = name ws
+    named_tune = name trash
     anonym_tune = block / sound
 
-    block = opening_block ws tune* ws "}" ws repeater? ws
+    block = opening_block trash tune* trash "}" trash repeater?
     opening_block = "{"
-    repeater = "*" ws repeat_counter
+    repeater = "*" trash repeat_counter
     repeat_counter = ~"\d+"
 
     sound = note / silence
 
-    note = pitch hs duration hs sleep_time? ws
+    note = pitch hs duration hs sleep_time? trash
     pitch = pitch_label shifter? octave
     pitch_label = "DO" / "RE" / "MI" / "FA" / "SOL" / "LA" / "SI"
     shifter = "#" / "b"
@@ -31,9 +31,13 @@ grammar = parsimonious.grammar.Grammar(
     duration = ~"\d+"
     sleep_time = ~"\d*.\d+"
 
+    comment = ~"//.+"
+    trash = ((comment / hs)* newline?)*
+
     name = ~"[A-Z 0-9]+"i
     ws = ~"\s*"
     hs = ~"[\t\ ]*"
+    newline = ~"[\r\n]"
     """
 )
 
