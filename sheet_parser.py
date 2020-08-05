@@ -31,11 +31,11 @@ grammar = parsimonious.grammar.Grammar(
     sound = note / silence
 
     note = pitch hs duration hs sleep_time? trash
-    pitch = pitch_label shifter? octave
+    pitch = pitch_label accidental? octave
     pitch_label = pitch_italian_label / pitch_german_label
     pitch_italian_label = "DO" / "RE" / "MI" / "FA" / "SOL" / "LA" / "SI"
     pitch_german_label = "A" / "B" / "C" / "D" / "E" / "F" / "G"
-    shifter = "#" / "b"
+    accidental = "#" / "b"
     octave = ~"\d+"
 
     silence = "s"? hs sleep_time
@@ -65,7 +65,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.declarations = {}
 
         self.current_pitch_label = None
-        self.current_pitch_shift = None
+        self.current_pitch_accidental = None
         self.current_pitch_octave = None
         self.current_pitch_freq = None
 
@@ -129,20 +129,20 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
     def visit_pitch_label(self, node, children):
         self.current_pitch_label = tune.PitchLabelDict[node.text]
 
-    def visit_shifter(self, node, children):
-        self.current_pitch_shift = tune.PitchShift(node.text)
+    def visit_accidental(self, node, children):
+        self.current_pitch_accidental = tune.PitchAccidental(node.text)
 
     def visit_octave(self, node, children):
         self.current_pitch_octave = int(node.text)
 
     def visit_pitch(self, node, children):
-        if self.current_pitch_shift is None:
-            self.current_pitch_shift = tune.PitchShift.NORMAL
+        if self.current_pitch_accidental is None:
+            self.current_pitch_accidental = tune.PitchAccidental.NATURAL
 
-        self.current_pitch = tune.Pitch(self.current_pitch_label, self.current_pitch_octave, self.current_pitch_shift)
+        self.current_pitch = tune.Pitch(self.current_pitch_label, self.current_pitch_octave, self.current_pitch_accidental)
 
         self.current_pitch_label = None
-        self.current_pitch_shift = None
+        self.current_pitch_accidental = None
         self.current_pitch_octave = None
 
     def visit_duration(self, node, children):

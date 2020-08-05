@@ -15,10 +15,10 @@ class PitchLabel(enum.Enum):
     LA = "LA"
     SI = "SI"
 
-class PitchShift(enum.Enum):
-    NORMAL = ""
+class PitchAccidental(enum.Enum):
+    NATURAL = ""
     SHARP = "#"
-    BEMOL = "b"
+    FLAT = "b"
 
 PitchLabelDict = {
     "A" : PitchLabel.LA,
@@ -76,10 +76,10 @@ class Pattern(AbstractTune):
                 tune.play(tempo=tempo)
 
 class Pitch():
-    def __init__(self, pitch_label, octave, pitch_shift=PitchShift.NORMAL):
+    def __init__(self, pitch_label, octave, pitch_accidental=PitchAccidental.NATURAL):
         self.pitch_label = pitch_label
         self.octave = octave
-        self.pitch_shift = pitch_shift
+        self.pitch_accidental = pitch_accidental
 
         self.freq = self._compute_freq()
 
@@ -88,14 +88,14 @@ class Pitch():
     LA3_FREQ = 440
 
     def _compute_freq(self):
-        shifter = 0
-        if self.pitch_shift == PitchShift.SHARP:
-            shifter = 1
-        if self.pitch_shift == PitchShift.BEMOL:
-            shifter = -1
+        accidenter = 0
+        if self.pitch_accidental == PitchAccidental.SHARP:
+            accidenter = 1
+        if self.pitch_accidental == PitchAccidental.FLAT:
+            accidenter = -1
 
-        shifted_octave = self.octave-3
-        la3_interval = shifted_octave*12 + interval_dict[self.pitch_label] + shifter
+        accidented_octave = self.octave-3
+        la3_interval = accidented_octave*12 + interval_dict[self.pitch_label] + accidenter
         return Pitch.LA3_FREQ * (Pitch.SEMITONE_FREQ**la3_interval)
 
 
@@ -103,7 +103,7 @@ class Pitch():
         return self.freq
 
     def __str__(self):
-        return self.pitch_label.value + self.pitch_shift.value + str(self.octave)
+        return self.pitch_label.value + self.pitch_accidental.value + str(self.octave)
 
 class Note(AbstractTune):
     def __init__(self, pitch, duration):
