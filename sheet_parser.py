@@ -1,6 +1,8 @@
 import parsimonious
 import tune
 
+import repeat_mode as rm
+
 grammar = parsimonious.grammar.Grammar(
     r"""
     entry = trash declarative? trash sheet trash
@@ -16,8 +18,12 @@ grammar = parsimonious.grammar.Grammar(
 
     block = opening_block trash tune* trash "}" trash repeater?
     opening_block = "{"
-    repeater = "*" trash repeat_counter
-    repeat_counter = ~"\d+"
+    repeater = "*" trash (simple_repeat_counter / random_repeat)
+    simple_repeat_counter = ~"\d+"
+
+    random_repeat = "(" trash min_random_counter trash "-" trash max_random_counter trash ")"
+    min_random_counter = ~"\d+"
+    max_random_counter = ~"\d+"
 
     sound = note / silence
 
@@ -64,6 +70,9 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_pitch_duration = None
         self.current_pitch_sleep_time = None
 
+        self.min_random_counter = None
+        self.max_random_counter = None
+
     def get_current_block(self):
         if self.blocks == []:
             return None
@@ -85,8 +94,22 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.current_name = None
         self.current_tune = None
 
-    def visit_repeat_counter(self, node, children):
-        self.get_current_block().nb_loops = int(node.text)
+    def visit_simple_repeat_counter(self, node, children):
+        repeat_mode = rm.SimpleRepeatMode(int(node.text))
+        self.get_current_block().set_repeat_mode(repeat_mode)
+
+    def visit_min_random_counter(self, node, children):
+        self.min_random_counter = int(node.text)
+
+    def visit_max_random_counter(self, node, children):
+        self.max_random_counter = int(node.text)
+
+    def visit_random_repeat(self, node, children):
+        repeat_mode = rm.RandomRepeatMode(self.min_random_counter, self.max_random_counter)
+        self.get_current_block().set_repeat_mode(repeat_mode)
+
+        self.min_random_counter = None
+        self.max_random_counter = None
 
     def visit_block(self, node, children):
         closed_block = self.blocks.pop()
