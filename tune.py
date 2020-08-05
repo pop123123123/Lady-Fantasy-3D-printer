@@ -60,7 +60,9 @@ class Pattern(AbstractTune):
             tunes = []
 
         self.tunes = tunes
-        self.repeat_mode = None
+
+        if repeat_mode is None:
+            self.repeat_mode = rm.SimpleRepeatMode()
 
     def add_tune(self, tune):
         self.tunes.append(tune)
@@ -69,7 +71,6 @@ class Pattern(AbstractTune):
         self.repeat_mode = repeat_mode
 
     def play(self, tempo=1):
-        assert(isinstance(self.repeat_mode, rm.AbstractRepeatMode))
         for _ in range(self.repeat_mode.get_repeat_number()):
             for tune in self.tunes:
                 tune.play(tempo=tempo)
