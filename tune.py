@@ -4,6 +4,8 @@ import enum
 import os
 import time
 
+import repeat_mode as rm
+
 class PitchLabel(enum.Enum):
     DO = "DO"
     RE = "RE"
@@ -53,18 +55,22 @@ class AbstractTune():
         raise NotImplementedError()
 
 class Pattern(AbstractTune):
-    def __init__(self, tunes=None, nb_loops=1):
+    def __init__(self, tunes=None, repeat_mode=None):
         if tunes is None:
             tunes = []
 
         self.tunes = tunes
-        self.nb_loops = nb_loops
+        self.repeat_mode = None
 
     def add_tune(self, tune):
         self.tunes.append(tune)
 
+    def set_repeat_mode(self, repeat_mode):
+        self.repeat_mode = repeat_mode
+
     def play(self, tempo=1):
-        for _ in range(self.nb_loops):
+        assert(isinstance(self.repeat_mode, rm.AbstractRepeatMode))
+        for _ in range(self.repeat_mode.get_repeat_number()):
             for tune in self.tunes:
                 tune.play(tempo=tempo)
 
@@ -105,7 +111,6 @@ class Note(AbstractTune):
 
     def play(self, tempo=1):
         os.system("beep -f {} -l {}".format(self.pitch.get_freq(), self.duration*tempo))
-
 
     def __str__(self):
         return str(self.pitch) + " " + str(self.duration)
