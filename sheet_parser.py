@@ -21,9 +21,12 @@ grammar = parsimonious.grammar.Grammar(
     repeater = "*" trash (simple_repeat_counter / random_repeat)
     simple_repeat_counter = ~"\d+"
 
-    random_repeat = "(" trash min_random_counter trash "-" trash max_random_counter trash ")"
+    random_repeat = "(" trash min_random_counter trash "-" trash max_random_counter trash base_repeat? ")"
     min_random_counter = ~"\d+"
     max_random_counter = ~"\d+"
+
+    base_repeat = "base" trash base_repeat_counter
+    base_repeat_counter = ~"\d+"
 
     sound = note / silence
 
@@ -72,6 +75,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
 
         self.min_random_counter = None
         self.max_random_counter = None
+        self.base_repeat_counter = None
 
     def get_current_block(self):
         if self.blocks == []:
@@ -104,12 +108,19 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
     def visit_max_random_counter(self, node, children):
         self.max_random_counter = int(node.text)
 
+    def visit_base_repeat_counter(self, node, children):
+        self.base_repeat_counter = int(node.text)
+
     def visit_random_repeat(self, node, children):
-        repeat_mode = rm.RandomRepeatMode(self.min_random_counter, self.max_random_counter)
+        if self.base_repeat_counter is None:
+            self.base_repeat_counter = 1
+
+        repeat_mode = rm.RandomRepeatMode(self.min_random_counter, self.max_random_counter, self.base_repeat_counter)
         self.get_current_block().set_repeat_mode(repeat_mode)
 
         self.min_random_counter = None
         self.max_random_counter = None
+        self.base_repeat_counter = None
 
     def visit_block(self, node, children):
         closed_block = self.blocks.pop()
