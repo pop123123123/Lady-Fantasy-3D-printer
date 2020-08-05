@@ -22,19 +22,23 @@ class SimpleRepeatMode(AbstractRepeatMode):
         return self.nb_loops
 
 class RandomRepeatMode(AbstractRepeatMode):
-    def __init__(self, min_repeats, max_repeats):
+    def __init__(self, min_repeats, max_repeats, base=1):
         self.min_repeats = min_repeats
         self.max_repeats = max_repeats
+        self.base = base
 
     def set_repeat_number(self, *args):
-        assert(len(args) == 2)
+        assert(len(args) == 3)
         min_repeats = args[0]
         max_repeats = args[1]
+        base = args[2]
         assert(isinstance(min_repeats, int))
         assert(isinstance(max_repeats, int))
+        assert(isinstance(base, int))
 
         self.min_repeats = min_repeats
         self.max_repeats = max_repeats
+        self.base = base
 
     def get_repeat_number(self):
-        return random.randint(self.min_repeats, self.max_repeats)
+        return random.randint(self.min_repeats, self.max_repeats)*self.base
