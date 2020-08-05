@@ -55,6 +55,7 @@ BEGIN:
         SI2 150 0.1
         SOL#2 250
         LA2 500
-    } * 2
+    } * (0 - 1 base 2)
+    𝅘𝅥𝅮 We play this pattern either 0 or 2 times
 
 } * 2
