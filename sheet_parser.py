@@ -7,7 +7,7 @@ grammar = parsimonious.grammar.Grammar(
     r"""
     entry = trash declarative? trash sheet trash
     declarative = "DECLARE:" trash declare_tune+ trash
-    declare_tune = name hs ":=" hs anonym_tune trash
+    declare_tune = new_tune_name hs ":=" hs anonym_tune trash
 
     sheet = "BEGIN:" trash tune+
 
@@ -15,6 +15,7 @@ grammar = parsimonious.grammar.Grammar(
 
     named_tune = name trash
     anonym_tune = block / sound
+    new_tune_name = name trash
 
     block = opening_block trash tune* trash "}" trash repeater?
     opening_block = "{"
@@ -59,6 +60,7 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         self.blocks = [self.allfather_block]
 
         self.current_name = None
+        self.new_tune_name = None
 
         self.current_tune = None
 
@@ -92,10 +94,14 @@ class SheetVisitor(parsimonious.nodes.NodeVisitor):
         new_block = tune.Pattern()
         self.blocks.append(new_block)
 
-    def visit_declare_tune(self, node, children):
-        self.declarations[self.current_name] = self.current_tune
-
+    def visit_new_tune_name(self, node, children):
+        self.new_tune_name = self.current_name
         self.current_name = None
+
+    def visit_declare_tune(self, node, children):
+        self.declarations[self.new_tune_name] = self.current_tune
+
+        self.new_tune_name = None
         self.current_tune = None
 
     def visit_simple_repeat_counter(self, node, children):
