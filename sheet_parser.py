@@ -46,7 +46,7 @@ grammar = parsimonious.grammar.Grammar(
     comment_sign = "//" / "𝅘𝅥𝅮"
     trash = ((comment / hs)* newline?)*
 
-    name = ~"[A-Z 0-9]+"i
+    name = ~"[A-Z 0-9 _ -]+"i
     ws = ~"\s*"
     hs = ~"[\t\ ]*"
     newline = ~"[\r\n]"
