@@ -85,7 +85,7 @@ class Pitch():
 
 
     SEMITONE_FREQ = 1.05946
-    LA3_FREQ = 440
+    LA3_FREQ = 1840
 
     def _compute_freq(self):
         accidenter = 0
@@ -105,13 +105,42 @@ class Pitch():
     def __str__(self):
         return self.pitch_label.value + self.pitch_accidental.value + str(self.octave)
 
+
+print('G90')
+print('G0 X0 Y0')
+print('G91')
+print('M203 X60 Y60')
+
+y = 0
+direction = 1
+MARGIN = 20
+BED_SIZE = 100
+def get_size(rate, seconds):
+  return seconds * rate / 60
+
 class Note(AbstractTune):
     def __init__(self, pitch, duration):
         self.pitch = pitch
         self.duration = duration
 
     def play(self, tempo=1):
-        os.system("beep -f {} -l {}".format(self.pitch.get_freq(), self.duration*tempo))
+        global direction, y
+        f = round(self.pitch.get_freq(), 2)
+        s = round(get_size(f, self.duration * tempo / 1000), 2)
+        if s > 30:
+            d = self.duration
+            self.duration = d / 2
+            self.play(tempo)
+            self.play(tempo)
+            self.duration = d
+            return
+        if y + s * direction >= BED_SIZE - MARGIN:
+            direction = -1
+        elif y + s * direction <= MARGIN:
+            direction = 1
+        s *= direction
+        y += s
+        print('G0 F{} X{} Y{}'.format(f, 0, s))
 
     def __str__(self):
         return str(self.pitch) + " " + str(self.duration)
@@ -122,7 +151,7 @@ class Silence(AbstractTune):
         self.duration = duration
 
     def play(self, tempo=1):
-        time.sleep(self.duration*tempo)
+        print('G4 S{}'.format(self.duration*tempo))
 
     def __str__(self):
         return "s", str(self.duration)
